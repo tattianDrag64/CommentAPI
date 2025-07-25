@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommentAPI.Migrations
 {
     [DbContext(typeof(CommentDBContext))]
-    [Migration("20250724185717_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250725131145_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
