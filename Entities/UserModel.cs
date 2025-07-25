@@ -5,7 +5,7 @@ namespace CommentAPI.Entities
     public class UserModel
     {
         [Key]
-        public int ID { get; set; }
+        public Guid ID { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]
