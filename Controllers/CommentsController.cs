@@ -1,4 +1,5 @@
-﻿using CommentAPI.Interfaces;
+﻿using CommentAPI.Entities;
+using CommentAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommentAPI.Controllers
@@ -23,7 +24,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             var comment = await _commentRepository.GetByIdAsync(id);
             if (comment == null)
@@ -34,7 +35,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] Entities.CommentEntity comment)
+        public async Task<IActionResult> CreateAsync([FromBody] CommentEntity comment)
         {
             if (comment == null)
             {
@@ -45,7 +46,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] Entities.CommentEntity comment)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] CommentEntity comment)
         {
             if (comment == null || comment.ID != id)
             {
@@ -60,7 +61,7 @@ namespace CommentAPI.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var comment = await _commentRepository.GetByIdAsync(id);
             if (comment == null)
@@ -71,7 +72,7 @@ namespace CommentAPI.Controllers
             return NoContent();
         }
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetByUserIdAsync(int userId)
+        public async Task<IActionResult> GetByUserIdAsync(Guid userId)
         {
             var comments = await _commentRepository.GetByUserIdAsync(userId);
             if (comments == null || !comments.Any())

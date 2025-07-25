@@ -1,6 +1,6 @@
 ﻿using CommentAPI.Data;
 using CommentAPI.Entities;
-using CommentAPI.Interfaces;
+using CommentAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommentAPI.Repositories.Implementations
@@ -16,7 +16,7 @@ namespace CommentAPI.Repositories.Implementations
         {
             return await _context.Comments.ToListAsync();
         }
-        public async Task<CommentEntity> GetByIdAsync(int id)
+        public async Task<CommentEntity> GetByIdAsync(Guid id)
         {
             return await _context.Comments.FindAsync(id);
         }
@@ -36,9 +36,11 @@ namespace CommentAPI.Repositories.Implementations
             _context.Comments.Remove(commentEntity);
             await _context.SaveChangesAsync();
         }
-        public async Task<IEnumerable<CommentEntity>> GetByUserIdAsync(int userId)
+        public async Task<IEnumerable<CommentEntity>> GetByUserIdAsync(Guid userId)
         {
             return await _context.Comments.Where(c => c.UserID == userId).ToListAsync();
         }
+
+       
     }
 }
