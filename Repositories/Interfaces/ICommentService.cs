@@ -1,10 +1,8 @@
 ﻿using CommentAPI.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CommentAPI.Repositories.Interfaces
 {
-    public interface ICommentRepository
+    public interface ICommentService
     {
         Task<IEnumerable<CommentEntity>> GetAllAsync();
         Task<CommentEntity> GetByIdAsync(Guid id);

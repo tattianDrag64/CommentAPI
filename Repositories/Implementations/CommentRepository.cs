@@ -14,7 +14,12 @@ namespace CommentAPI.Repositories.Implementations
         }
         public async Task<IEnumerable<CommentEntity>> GetAllAsync()
         {
-            return await _context.Comments.ToListAsync();
+            var tempData = await _context.Comments.ToListAsync();
+            if (tempData == null || !tempData.Any())
+            {
+                return null;
+            }
+            return tempData;
         }
         public async Task<CommentEntity> GetByIdAsync(Guid id)
         {
@@ -26,15 +31,27 @@ namespace CommentAPI.Repositories.Implementations
             await _context.SaveChangesAsync();
             return comment;
         }
-        public async Task UpdateAsync(CommentEntity comment)
+        public async Task<CommentEntity> UpdateAsync(CommentEntity comment)
         {
-            _context.Comments.Update(comment);
+            var tempData = await _context.Comments.FindAsync(comment.ID);
+            if (tempData == null)
+            {
+                return null;
+            }
+            _context.Comments.Update(tempData);
             await _context.SaveChangesAsync();
+            return tempData;
         }
-        public async Task DeleteAsync(CommentEntity commentEntity)
+        public async Task<bool> DeleteAsync(CommentEntity commentEntity)
         {
-            _context.Comments.Remove(commentEntity);
+            var tempData = await _context.Comments.FindAsync(commentEntity.ID);
+            if(tempData == null)
+            {
+                return false;
+            }
+            _context.Comments.Remove(tempData);
             await _context.SaveChangesAsync();
+            return true;
         }
         public async Task<IEnumerable<CommentEntity>> GetByUserIdAsync(Guid userId)
         {
