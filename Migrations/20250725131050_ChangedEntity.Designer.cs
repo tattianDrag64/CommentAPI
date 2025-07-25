@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommentAPI.Migrations
 {
     [DbContext(typeof(CommentDBContext))]
-    [Migration("20250725114923_ChangedEntity")]
+    [Migration("20250725131050_ChangedEntity")]
     partial class ChangedEntity
     {
         /// <inheritdoc />
