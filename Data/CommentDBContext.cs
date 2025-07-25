@@ -12,7 +12,6 @@ namespace CommentAPI.Data
         public DbSet<UserModel> Users { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=CommentDB;Trusted_Connection=true;MultipleActiveResultSets=true");
             base.OnConfiguring(optionsBuilder);
         }
 
