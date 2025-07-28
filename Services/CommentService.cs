@@ -15,7 +15,15 @@ namespace CommentAPI.Services
 
         public async Task<CommentEntity> CreateAsync(CommentEntity comment)
         {
-           return await _commentRepository.CreateAsync(comment);
+            var commentTemp = new CommentEntity()
+            {
+                Content = comment.Content,
+                EventID = comment.EventID,
+                UserID = comment.UserID,
+                CreatedAt = comment.CreatedAt,
+                ID = comment.ID
+            };
+           return await _commentRepository.CreateAsync(commentTemp);
         }
 
         public async Task<IEnumerable<CommentEntity>> GetAllAsync()

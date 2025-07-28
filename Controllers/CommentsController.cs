@@ -42,7 +42,7 @@ namespace CommentAPI.Controllers
                 return BadRequest("Comment cannot be null");
             }
             var createdComment = await _service.CreateAsync(comment);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = createdComment.ID }, createdComment);
+            return Ok(comment);
         }
 
         [HttpPut("{id}")]
