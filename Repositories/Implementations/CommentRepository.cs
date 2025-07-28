@@ -1,6 +1,7 @@
 ﻿using CommentAPI.Data;
 using CommentAPI.Entities;
 using CommentAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommentAPI.Repositories.Implementations
@@ -14,31 +15,62 @@ namespace CommentAPI.Repositories.Implementations
         }
         public async Task<IEnumerable<CommentEntity>> GetAllAsync()
         {
-            return await _context.Comments.ToListAsync();
+            var tempData = await _context.Comments.ToListAsync();
+            if (tempData == null || !tempData.Any())
+            {
+                throw new ArgumentNullException(nameof(tempData), "No comments found!");
+            }
+            return tempData;
         }
         public async Task<CommentEntity> GetByIdAsync(Guid id)
         {
-            return await _context.Comments.FindAsync(id);
+            var tempData = await _context.Comments.FindAsync(id);
+            if (tempData == null)
+            {
+                throw new ArgumentNullException(nameof(tempData), "Comment not found! / 404");
+            }
+            return tempData;
         }
         public async Task<CommentEntity> CreateAsync(CommentEntity comment)
         {
+            if (comment == null)
+            {
+                throw new ArgumentNullException(nameof(comment), "Comment cannot be null!");
+            }
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
             return comment;
         }
-        public async Task UpdateAsync(CommentEntity comment)
+        public async Task<CommentEntity> UpdateAsync(CommentEntity comment)
         {
-            _context.Comments.Update(comment);
+            var tempData = await _context.Comments.FindAsync(comment.ID);
+            if (tempData == null)
+            {
+                throw new ArgumentNullException(nameof(comment), "Comment not found! / 404");
+            }
+            _context.Comments.Update(tempData);
             await _context.SaveChangesAsync();
+            return tempData;
         }
-        public async Task DeleteAsync(CommentEntity commentEntity)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            _context.Comments.Remove(commentEntity);
+            var tempData = await _context.Comments.FindAsync(id);
+            if(tempData == null)
+            {
+                return false;
+            }
+            _context.Comments.Remove(tempData);
             await _context.SaveChangesAsync();
+            return true;
         }
         public async Task<IEnumerable<CommentEntity>> GetByUserIdAsync(Guid userId)
         {
-            return await _context.Comments.Where(c => c.UserID == userId).ToListAsync();
+            var tempData = await _context.Comments.Where(c => c.UserID == userId).ToListAsync();
+            if (tempData == null || !tempData.Any())
+            {
+                throw new ArgumentNullException(nameof(tempData), "Comments not found to return as list");
+            }
+            return tempData;
         }
 
        

@@ -8,25 +8,25 @@ namespace CommentAPI.Controllers
     [ApiController]
     public class CommentsController : Controller
     {
-        private readonly ICommentRepository _commentRepository;
+        private readonly ICommentService _service;
         //private readonly ILogger<CommentsController> _logger;
-        public CommentsController(ICommentRepository commentRepository)
+        public CommentsController(ICommentService CommentService)
         {
-            _commentRepository = commentRepository;
+            _service = CommentService;
         }
 
         [HttpGet]
         //[Route("index")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var comments = await _commentRepository.GetAllAsync();
+            var comments = await _service.GetAllAsync();
             return Ok(comments);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            var comment = await _commentRepository.GetByIdAsync(id);
+            var comment = await _service.GetByIdAsync(id);
             if (comment == null)
             {
                 return NotFound();
@@ -41,8 +41,8 @@ namespace CommentAPI.Controllers
             {
                 return BadRequest("Comment cannot be null");
             }
-            var createdComment = await _commentRepository.CreateAsync(comment);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = createdComment.ID }, createdComment);
+            var createdComment = await _service.CreateAsync(comment);
+            return Ok(comment);
         }
 
         [HttpPut("{id}")]
@@ -52,29 +52,24 @@ namespace CommentAPI.Controllers
             {
                 return BadRequest("Comment doesnt exist");
             }
-            var existingComment = await _commentRepository.GetByIdAsync(id);
+            var existingComment = await _service.GetByIdAsync(id);
             if (existingComment == null)
             {
                 return NotFound();
             }
-            await _commentRepository.UpdateAsync(comment);
+            await _service.UpdateAsync(comment);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            var comment = await _commentRepository.GetByIdAsync(id);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-            await _commentRepository.DeleteAsync(comment);
-            return NoContent();
+            await _service.DeleteAsync(id);
+            return Ok();
         }
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetByUserIdAsync(Guid userId)
         {
-            var comments = await _commentRepository.GetByUserIdAsync(userId);
+            var comments = await _service.GetByUserIdAsync(userId);
             if (comments == null || !comments.Any())
             {
                 return NotFound();
