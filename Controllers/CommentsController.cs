@@ -63,13 +63,8 @@ namespace CommentAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            var comment = await _service.GetByIdAsync(id);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-            await _service.DeleteAsync(comment);
-            return NoContent();
+            await _service.DeleteAsync(id);
+            return Ok();
         }
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetByUserIdAsync(Guid userId)

@@ -8,6 +8,11 @@ namespace CommentAPI.Services
     {
         private readonly ICommentRepository _commentRepository;
 
+        public CommentService(ICommentRepository commentRepository)
+        {
+            _commentRepository = commentRepository;
+        }
+
         public async Task<CommentEntity> CreateAsync(CommentEntity comment)
         {
            return await _commentRepository.CreateAsync(comment);
@@ -15,8 +20,7 @@ namespace CommentAPI.Services
 
         public async Task<IEnumerable<CommentEntity>> GetAllAsync()
         {
-            var tempData = await _commentRepository.GetAllAsync();
-            return tempData;
+            return await _commentRepository.GetAllAsync();
         }
 
         public async Task<CommentEntity> GetByIdAsync(Guid id)
@@ -31,26 +35,12 @@ namespace CommentAPI.Services
 
         public async Task<CommentEntity> UpdateAsync(CommentEntity comment)
         {
-            var tempData = await _commentRepository.GetByIdAsync(comment.ID);
-            if (tempData == null)
-            {
-                return null ;
-            }
-                return tempData;
+            return await _commentRepository.UpdateAsync(comment);
         }
 
-        public async Task<bool> DeleteAsync(CommentEntity commentEntity)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-           var tempData = await _commentRepository.GetByIdAsync(commentEntity.ID);
-            if (tempData != null)
-            {
-                await _commentRepository.DeleteAsync(tempData);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+        return await _commentRepository.DeleteAsync(id);
         }
     }
 }
