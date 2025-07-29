@@ -14,7 +14,12 @@ namespace CommentAPI.Repositories.Implementations
         }
         public async Task<IEnumerable<CommentEntity>> GetAllAsync()
         {
-            return await _context.Comments.ToListAsync();
+            var tempData = await _context.Comments.ToListAsync();
+            if (tempData == null || !tempData.Any())
+            {
+                return null;
+            }
+            return tempData;
         }
         public async Task<CommentEntity> GetByIdAsync(Guid id)
         {

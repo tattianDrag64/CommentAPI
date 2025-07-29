@@ -1,5 +1,5 @@
 ﻿using CommentAPI.Entities;
-using CommentAPI.Repositories.Interfaces;
+using CommentAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommentAPI.Controllers
@@ -19,7 +19,7 @@ namespace CommentAPI.Controllers
         //[Route("index")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var comments = await _commentRepository.GetAllAsync();
+            var comments = await _service.GetAllAsync();
             return Ok(comments);
         }
 
