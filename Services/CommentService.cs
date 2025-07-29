@@ -43,7 +43,6 @@ namespace CommentAPI.Services
 
         public async Task<CommentEntity> UpdateAsync(CommentEntity comment)
         {
-            // Ensure the comment exists before updating  
             var existingComment = await _commentRepository.GetByIdAsync(comment.ID); 
             existingComment.Content = comment.Content;
             existingComment.CreatedAt = DateTime.Now;
