@@ -24,7 +24,7 @@ namespace CommentAPI.Services
                 ID = comment.ID
             };
             return await _commentRepository.CreateAsync(commentTemp);
-        }
+        } 
 
         public async Task<IEnumerable<CommentEntity>> GetAllAsync()
         {
