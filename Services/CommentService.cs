@@ -1,6 +1,6 @@
 ﻿using CommentAPI.Data;
 using CommentAPI.Entities;
-using CommentAPI.Repositories.Interfaces;
+using CommentAPI.Repositories;
 
 namespace CommentAPI.Services
 {
@@ -20,7 +20,7 @@ namespace CommentAPI.Services
                 Content = comment.Content,
                 EventID = comment.EventID,
                 UserID = comment.UserID,
-                CreatedAt = comment.CreatedAt,
+                CreatedAt = DateTime.Now,
                 ID = comment.ID
             };
             return await _commentRepository.CreateAsync(commentTemp);
@@ -31,7 +31,7 @@ namespace CommentAPI.Services
             return await _commentRepository.GetAllAsync();
         }
 
-        public async Task<CommentEntity> GetByIdAsync(Guid id)
+        public async Task<CommentEntity> GetByIdAsync(int id)
         {
             return await _commentRepository.GetByIdAsync(id);
         }
@@ -45,13 +45,13 @@ namespace CommentAPI.Services
         {
             var existingComment = await _commentRepository.GetByIdAsync(comment.ID); 
             existingComment.Content = comment.Content;
-            existingComment.CreatedAt = DateTime.Now;
+            existingComment.UpdatedAt = DateTime.Now;
 
             await _commentRepository.UpdateAsync(existingComment);
             return existingComment;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(int id)
         {
             return await _commentRepository.DeleteAsync(id);
         }

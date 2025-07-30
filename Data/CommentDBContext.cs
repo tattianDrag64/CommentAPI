@@ -9,7 +9,6 @@ namespace CommentAPI.Data
         {
         }
         public DbSet<CommentEntity> Comments { get; set; }
-        public DbSet<UserModel> Users { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

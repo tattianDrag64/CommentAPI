@@ -1,10 +1,9 @@
 ﻿using CommentAPI.Data;
 using CommentAPI.Entities;
-using CommentAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
-namespace CommentAPI.Repositories.Implementations
+namespace CommentAPI.Repositories
 {
     public class CommentRepository : ICommentRepository
     {
@@ -22,7 +21,7 @@ namespace CommentAPI.Repositories.Implementations
             }
             return tempData;
         }
-        public async Task<CommentEntity> GetByIdAsync(Guid id)
+        public async Task<CommentEntity> GetByIdAsync(int id)
         {
             var tempData = await _context.Comments.FindAsync(id);
             if (tempData == null)
@@ -52,10 +51,10 @@ namespace CommentAPI.Repositories.Implementations
             await _context.SaveChangesAsync();
             return tempData;
         }
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var tempData = await _context.Comments.FindAsync(id);
-            if(tempData == null)
+            if (tempData == null)
             {
                 return false;
             }
@@ -73,6 +72,6 @@ namespace CommentAPI.Repositories.Implementations
             return tempData;
         }
 
-       
+
     }
 }
