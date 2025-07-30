@@ -1,5 +1,6 @@
 ﻿using CommentAPI.Entities;
 using CommentAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommentAPI.Controllers
@@ -35,6 +36,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateAsync([FromBody] CommentEntity comment)
         {
             if (comment == null)
@@ -46,6 +48,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] CommentEntity comment)
         {
             if (comment == null || comment.ID != id)
@@ -61,6 +64,7 @@ namespace CommentAPI.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             await _service.DeleteAsync(id);

@@ -20,7 +20,7 @@ namespace CommentAPI.Services
                 Content = comment.Content,
                 EventID = comment.EventID,
                 UserID = comment.UserID,
-                CreatedAt = comment.CreatedAt,
+                CreatedAt = DateTime.Now,
                 ID = comment.ID
             };
             return await _commentRepository.CreateAsync(commentTemp);
@@ -45,7 +45,7 @@ namespace CommentAPI.Services
         {
             var existingComment = await _commentRepository.GetByIdAsync(comment.ID); 
             existingComment.Content = comment.Content;
-            existingComment.CreatedAt = DateTime.Now;
+            existingComment.UpdatedAt = DateTime.Now;
 
             await _commentRepository.UpdateAsync(existingComment);
             return existingComment;
