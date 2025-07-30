@@ -24,7 +24,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(Guid id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             var comment = await _service.GetByIdAsync(id);
             if (comment == null)
@@ -46,7 +46,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] CommentEntity comment)
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] CommentEntity comment)
         {
             if (comment == null || comment.ID != id)
             {
@@ -61,7 +61,7 @@ namespace CommentAPI.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(Guid id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             await _service.DeleteAsync(id);
             return Ok();

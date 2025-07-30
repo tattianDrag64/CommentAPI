@@ -1,7 +1,6 @@
 using CommentAPI.Data;
 using CommentAPI.Entities;
-using CommentAPI.Repositories.Implementations;
-using CommentAPI.Repositories.Interfaces;
+using CommentAPI.Repositories;
 using CommentAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +13,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<CommentEntity>();
-builder.Services.AddScoped<UserModel>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

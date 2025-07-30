@@ -1,6 +1,6 @@
 ﻿using CommentAPI.Data;
 using CommentAPI.Entities;
-using CommentAPI.Repositories.Interfaces;
+using CommentAPI.Repositories;
 
 namespace CommentAPI.Services
 {
@@ -31,7 +31,7 @@ namespace CommentAPI.Services
             return await _commentRepository.GetAllAsync();
         }
 
-        public async Task<CommentEntity> GetByIdAsync(Guid id)
+        public async Task<CommentEntity> GetByIdAsync(int id)
         {
             return await _commentRepository.GetByIdAsync(id);
         }
@@ -51,7 +51,7 @@ namespace CommentAPI.Services
             return existingComment;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(int id)
         {
             return await _commentRepository.DeleteAsync(id);
         }
