@@ -1,14 +1,15 @@
-﻿using CommentAPI.Entities;
+﻿using CommentAPI.DTO;
+using CommentAPI.Entities;
 
 namespace CommentAPI.Services
 {
     public interface ICommentService
     {
-        Task<IEnumerable<CommentEntity>> GetAllAsync();
-        Task<CommentEntity> GetByIdAsync(int id);
-        Task<CommentEntity> CreateAsync(CommentEntity comment);
-        Task<CommentEntity> UpdateAsync(CommentEntity comment);
+        Task<IEnumerable<CommentDTO>> GetAllAsync();
+        Task<CommentDTO> GetByIdAsync(int id);
+        Task<CreateCommentDto> CreateAsync(CreateCommentDto comment);
+        Task<UpdateCommentDto> UpdateAsync(CommentDTO comment);
         Task<bool> DeleteAsync(int id);
-        Task<IEnumerable<CommentEntity>> GetByUserIdAsync(Guid userId);
+        Task<IEnumerable<CommentDTO>> GetByUserIdAsync(Guid userId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CommentAPI.Data;
+using CommentAPI.DTO;
 using CommentAPI.Entities;
 using CommentAPI.Repositories;
 
@@ -13,42 +14,49 @@ namespace CommentAPI.Services
             _commentRepository = commentRepository;
         }
 
-        public async Task<CommentEntity> CreateAsync(CommentEntity comment)
+        public async Task<CreateCommentDto> CreateAsync(CreateCommentDto comment)
         {
-            var commentTemp = new CommentEntity()
+            var commentDto = new CreateCommentDto
             {
+                ID = comment.ID,
                 Content = comment.Content,
-                EventID = comment.EventID,
+                CreatedAt = comment.CreatedAt,
                 UserID = comment.UserID,
-                CreatedAt = DateTime.Now,
-                ID = comment.ID
+                EventID = comment.EventID
             };
-            return await _commentRepository.CreateAsync(commentTemp);
+            return await _commentRepository.CreateAsync(commentDto);
         } 
 
-        public async Task<IEnumerable<CommentEntity>> GetAllAsync()
+        public async Task<IEnumerable<CommentDTO>> GetAllAsync()
         {
             return await _commentRepository.GetAllAsync();
         }
 
-        public async Task<CommentEntity> GetByIdAsync(int id)
+        public async Task<CommentDTO> GetByIdAsync(int id)
         {
             return await _commentRepository.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<CommentEntity>> GetByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<CommentDTO>> GetByUserIdAsync(Guid userId)
         {
             return await _commentRepository.GetByUserIdAsync(userId);
         }
 
-        public async Task<CommentEntity> UpdateAsync(CommentEntity comment)
+        public async Task<UpdateCommentDto> UpdateAsync(CommentDTO comment)
         {
-            var existingComment = await _commentRepository.GetByIdAsync(comment.ID); 
-            existingComment.Content = comment.Content;
-            existingComment.UpdatedAt = DateTime.Now;
-
-            await _commentRepository.UpdateAsync(existingComment);
-            return existingComment;
+            var existingComment = await _commentRepository.GetByIdAsync(comment.ID);
+            if (existingComment == null)
+            {
+                return null; // Or throw an exception if preferred
+            }
+           var updateCommentDto = new UpdateCommentDto
+            {
+                ID = existingComment.ID,
+                Content = comment.Content,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _commentRepository.UpdateAsync(updateCommentDto);
+            return updateCommentDto;
         }
 
         public async Task<bool> DeleteAsync(int id)
