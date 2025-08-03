@@ -7,11 +7,12 @@ namespace CommentAPI.Repositories
 {
     public interface ICommentRepository
     {
-        Task<IEnumerable<CommentDTO>> GetAllAsync();
-        Task<CommentDTO> GetByIdAsync(int id);
-        Task<CreateCommentDto> CreateAsync(CreateCommentDto comment);
-        Task<UpdateCommentDto> UpdateAsync(UpdateCommentDto comment);
-        Task<bool> DeleteAsync(int id);
-        Task<IEnumerable<CommentDTO>> GetByUserIdAsync(Guid userId);
+        Task<List<CommentDTO>> GetAllComments();
+        Task<CommentDTO> GetByIdComment(int id);
+        Task<CreateCommentDto> CreateComment(CreateCommentDto comment);
+        Task<UpdateCommentDto> UpdateComment(UpdateCommentDto comment);
+        Task<bool> DeleteComment(int id);
+        Task<List<CommentDTO>> GetByUserIdComment(Guid userId);
+        Task<List<CommentDTO>> GetByEventIdComment(int eventId);
     }
 }

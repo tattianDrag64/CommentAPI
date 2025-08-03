@@ -13,16 +13,24 @@ namespace CommentAPI.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<CommentDTO>> GetAllAsync()
+        public async Task<List<CommentDTO>> GetAllComments()
         {
             var tempData = await _context.Comments.ToListAsync();
             if (tempData == null || !tempData.Any())
             {
                 throw new ArgumentNullException(nameof(tempData));
             }
-            return (IEnumerable<CommentDTO>)tempData;
+            return tempData.Select(comment => new CommentDTO
+            {
+                ID = comment.ID,
+                Content = comment.Content,
+                CreatedAt = comment.CreatedAt,
+                UpdatedAt = comment.UpdatedAt,
+                UserID = comment.UserID,
+                EventID = comment.EventID
+            }).ToList();
         }
-        public async Task<CommentDTO> GetByIdAsync(int id)
+        public async Task<CommentDTO> GetByIdComment(int id)
         {
             var tempData = await _context.Comments.FindAsync(id);
             if (tempData == null)
@@ -39,7 +47,7 @@ namespace CommentAPI.Repositories
                 EventID = tempData.EventID
             };
         }
-        public async Task<CreateCommentDto> CreateAsync(CreateCommentDto comment)
+        public async Task<CreateCommentDto> CreateComment(CreateCommentDto comment)
         {
             if (comment == null)
             {
@@ -60,7 +68,7 @@ namespace CommentAPI.Repositories
             comment.ID = commentEntity.ID;
             return comment;
         }
-        public async Task<UpdateCommentDto> UpdateAsync(UpdateCommentDto comment)
+        public async Task<UpdateCommentDto> UpdateComment(UpdateCommentDto comment)
         {
             var tempData = await _context.Comments.FindAsync(comment.ID);
             if (tempData == null)
@@ -78,7 +86,7 @@ namespace CommentAPI.Repositories
                 UpdatedAt = tempData.UpdatedAt
             };
         }
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteComment(int id)
         {
             var tempData = await _context.Comments.FindAsync(id);
             if (tempData == null)
@@ -89,16 +97,40 @@ namespace CommentAPI.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<IEnumerable<CommentDTO>> GetByUserIdAsync(Guid userId)
+        public async Task<List<CommentDTO>> GetByUserIdComment(Guid userId)
         {
             var tempData = await _context.Comments.Where(c => c.UserID == userId).ToListAsync();
             if (tempData == null || !tempData.Any())
             {
                 throw new ArgumentNullException(nameof(tempData));
             }
-            return (IEnumerable<CommentDTO>)tempData;
+            return tempData.Select(comment => new CommentDTO
+            {
+                ID = comment.ID,
+                Content = comment.Content,
+                CreatedAt = comment.CreatedAt,
+                UpdatedAt = comment.UpdatedAt,
+                UserID = comment.UserID,
+                EventID = comment.EventID
+            }).ToList();
         }
 
-
+        public async Task<List<CommentDTO>> GetByEventIdComment(int eventId)
+        {
+            var tempData = await _context.Comments.Where(c => c.EventID == eventId).ToListAsync();
+            if (tempData == null || !tempData.Any())
+            {
+                throw new ArgumentNullException(nameof(tempData));
+            }
+            return tempData.Select(comment => new CommentDTO
+            {
+                ID = comment.ID,
+                Content = comment.Content,
+                CreatedAt = comment.CreatedAt,
+                UpdatedAt = comment.UpdatedAt,
+                UserID = comment.UserID,
+                EventID = comment.EventID
+            }).ToList();
+        }
     }
 }

@@ -5,11 +5,12 @@ namespace CommentAPI.Services
 {
     public interface ICommentService
     {
-        Task<IEnumerable<CommentDTO>> GetAllAsync();
-        Task<CommentDTO> GetByIdAsync(int id);
-        Task<CreateCommentDto> CreateAsync(CreateCommentDto comment);
-        Task<UpdateCommentDto> UpdateAsync(CommentDTO comment);
-        Task<bool> DeleteAsync(int id);
-        Task<IEnumerable<CommentDTO>> GetByUserIdAsync(Guid userId);
+        Task<IEnumerable<CommentDTO>> GetAllComments();
+        Task<CommentDTO> GetByIdComment(int id);
+        Task<CreateCommentDto> CreateComment(CreateCommentDto comment);
+        Task<UpdateCommentDto> UpdateComment(CommentDTO comment);
+        Task<bool> DeleteComment(int id);
+        Task<List<CommentDTO>> GetByUserIdComment(Guid userId);
+        Task<List<CommentDTO>> GetByEventIdComment(int eventId);
     }
 }
