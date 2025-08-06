@@ -75,7 +75,7 @@ namespace CommentAPI.Controllers
             var existingComment = await _service.GetByIdComment(id);
             if (existingComment == null)
             {
-                return NotFound();
+                return NotFound("No comment found");
             }
 
             var tempUser = GetUserIdFromClaims();
@@ -83,12 +83,12 @@ namespace CommentAPI.Controllers
 
             if (tempUser == null)
             {
-                return Unauthorized("Invalid user ID");
+                return Unauthorized(new { success = false, message = "Invalid token" });
             }
 
             if (existingComment.UserID != tempUser.Value && userRole != "admin")
             {
-                return Forbid("Only Admin has access!");
+                return Forbid();
             }
 
             var commentToUpdate = new CommentDTO
@@ -119,12 +119,12 @@ namespace CommentAPI.Controllers
 
             if (tempUser == null)
             {
-                return Unauthorized("Invalid user ID");
+                return Unauthorized(new { success = false, message = "Invalid token" });
             }
 
             if (existingComment.UserID != tempUser.Value && userRole != "admin")
             {
-                return Forbid("Only Admin has access!");
+                return Forbid();
             }
 
             await _service.DeleteComment(id);
@@ -175,8 +175,8 @@ namespace CommentAPI.Controllers
 
         private Guid? GetUserIdFromClaims()
         {
-            var userIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdClaim != null && Guid.TryParse(userIdClaim, out var userId))
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
             {
                 return userId;
             }
@@ -185,10 +185,10 @@ namespace CommentAPI.Controllers
 
         private string? GetUserRoleFromClaims()
         {
-            var userRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role);
             if (userRole != null)
             {
-                return userRole;
+                return userRole.Value;
             }
             return null;
         }

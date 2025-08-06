@@ -3,32 +3,34 @@ using CommentAPI.Entities;
 using CommentAPI.Repositories;
 using CommentAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var appSettingsSection = builder.Configuration.GetSection("AppSettings");
-var secretKey = appSettingsSection.GetValue<string>("Token");
-var issuer = appSettingsSection.GetValue<string>("Issuer");
-var audience = appSettingsSection.GetValue<string>("Audience");
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var token =Convert.FromBase64String(jwtSettings["Token"]!);
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = "Bearer";
-    options.DefaultChallengeScheme = "Bearer";
-}).AddJwtBearer("Bearer", options =>
-{
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey)),
+        IssuerSigningKey = new SymmetricSecurityKey(token),
         ValidateIssuer = true,
-        ValidIssuer = issuer,
+        ValidIssuer = jwtSettings["Issuer"],
         ValidateAudience = true,
-        ValidAudience = audience,
+        ValidAudience = jwtSettings["Audience"],
         ValidateLifetime = false,
-    };
+            ClockSkew = TimeSpan.Zero
+        };
 });
 
 builder.Services.AddControllers();
