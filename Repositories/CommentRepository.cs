@@ -18,7 +18,7 @@ namespace CommentAPI.Repositories
             var tempData = await _context.Comments.ToListAsync();
             if (tempData == null || !tempData.Any())
             {
-                throw new ArgumentNullException(nameof(tempData));
+                throw new ArgumentNullException(nameof(tempData), "No Comments Found!");
             }
             return tempData.Select(comment => new CommentDTO
             {
@@ -35,7 +35,7 @@ namespace CommentAPI.Repositories
             var tempData = await _context.Comments.FindAsync(id);
             if (tempData == null)
             {
-                throw new ArgumentNullException(nameof(tempData));
+                throw new ArgumentNullException(nameof(tempData), "No Comment Found!");
             }
             return new CommentDTO
             {
@@ -51,7 +51,7 @@ namespace CommentAPI.Repositories
         {
             if (comment == null)
             {
-                throw new ArgumentNullException(nameof(comment));
+                throw new ArgumentNullException(nameof(comment), "Comment can't be null!");
             }
 
             var commentEntity = new CommentEntity
@@ -73,7 +73,7 @@ namespace CommentAPI.Repositories
             var tempData = await _context.Comments.FindAsync(comment.ID);
             if (tempData == null)
             {
-                throw new ArgumentNullException(nameof(comment));
+                throw new ArgumentNullException(nameof(comment), "No Comment Found!");
             }
             tempData.Content = comment.Content;
             tempData.UpdatedAt = DateTime.Now;
@@ -102,7 +102,7 @@ namespace CommentAPI.Repositories
             var tempData = await _context.Comments.Where(c => c.UserID == userId).ToListAsync();
             if (tempData == null || !tempData.Any())
             {
-                throw new ArgumentNullException(nameof(tempData));
+                throw new ArgumentNullException(nameof(tempData), "No User Found!");
             }
             return tempData.Select(comment => new CommentDTO
             {
@@ -120,7 +120,7 @@ namespace CommentAPI.Repositories
             var tempData = await _context.Comments.Where(c => c.EventID == eventId).ToListAsync();
             if (tempData == null || !tempData.Any())
             {
-                throw new ArgumentNullException(nameof(tempData));
+                throw new ArgumentNullException(nameof(tempData), "No Event Found!");
             }
             return tempData.Select(comment => new CommentDTO
             {

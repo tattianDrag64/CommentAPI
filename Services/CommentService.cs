@@ -47,7 +47,7 @@ namespace CommentAPI.Services
             var existingComment = await _commentRepository.GetByIdComment(comment.ID);
             if (existingComment == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(existingComment), "No Comment Found!");
             }
             var updateCommentDto = new UpdateCommentDto
             {

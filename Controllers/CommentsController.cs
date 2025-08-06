@@ -3,6 +3,8 @@ using CommentAPI.Entities;
 using CommentAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace CommentAPI.Controllers
@@ -37,16 +39,22 @@ namespace CommentAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User, Admin")]
+        [Authorize(Roles = "user, admin")]
         public async Task<ActionResult<CommentDTO>> CreateComment([FromBody] CreateCommentDto createDto)
         {
-            if (createDto == null)
+
+            if (!ModelState.IsValid) {
+                return BadRequest();
+        }
+
+                if (createDto == null)
             {
                 return BadRequest("Comment cannot be null");
             }
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out Guid userGuid))
+            var tempUser = GetUserIdFromClaims();
+
+            if (tempUser == null)
             {
                 return Unauthorized("Invalid user ID");
             }
@@ -56,7 +64,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "User, Admin")]
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> UpdateComment(int id, [FromBody] UpdateCommentDto updateDto)
         {
             if (updateDto == null)
@@ -70,15 +78,17 @@ namespace CommentAPI.Controllers
                 return NotFound();
             }
 
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out Guid userGuid))
+            var tempUser = GetUserIdFromClaims();
+            var userRole = GetUserRoleFromClaims();
+
+            if (tempUser == null)
             {
                 return Unauthorized("Invalid user ID");
             }
 
-            if (existingComment.UserID != userGuid)
+            if (existingComment.UserID != tempUser.Value && userRole != "admin")
             {
-                return Forbid();
+                return Forbid("Only Admin has access!");
             }
 
             var commentToUpdate = new CommentDTO
@@ -95,7 +105,7 @@ namespace CommentAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize]
         public async Task<IActionResult> DeleteComment(int id)
         {
             var existingComment = await _service.GetByIdComment(id);
@@ -104,17 +114,17 @@ namespace CommentAPI.Controllers
                 return NotFound();
             }
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var tempUser = GetUserIdFromClaims();
+            var userRole = GetUserRoleFromClaims();
 
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out Guid userGuid))
+            if (tempUser == null)
             {
                 return Unauthorized("Invalid user ID");
             }
 
-            if (existingComment.UserID != userGuid && userRole != "Admin")
+            if (existingComment.UserID != tempUser.Value && userRole != "admin")
             {
-                return Forbid();
+                return Forbid("Only Admin has access!");
             }
 
             await _service.DeleteComment(id);
@@ -161,6 +171,26 @@ namespace CommentAPI.Controllers
                 EventID = c.EventID
             });
             return Ok(commentDtos);
+        }
+
+        private Guid? GetUserIdFromClaims()
+        {
+            var userIdClaim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim != null && Guid.TryParse(userIdClaim, out var userId))
+            {
+                return userId;
+            }
+            return null;
+        }
+
+        private string? GetUserRoleFromClaims()
+        {
+            var userRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (userRole != null)
+            {
+                return userRole;
+            }
+            return null;
         }
     }
 }
