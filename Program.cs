@@ -11,7 +11,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var token =Convert.FromBase64String(jwtSettings["Token"]!);
+var token = Convert.FromBase64String(jwtSettings["Token"]!);
 
 builder.Services.AddAuthentication(options =>
 {

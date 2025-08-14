@@ -14,5 +14,8 @@ namespace CommentAPI.Repositories
         Task<bool> DeleteComment(int id);
         Task<List<CommentDTO>> GetByUserIdComment(Guid userId);
         Task<List<CommentDTO>> GetByEventIdComment(int eventId);
+        Task<List<CommentDTO>> GetParentComment(int replyID);
+        Task<List<CommentDTO>> GetReplies(int commentId);
+        Task<List<CommentDTO>> GetTopLevelComments(int eventId);
     }
 }

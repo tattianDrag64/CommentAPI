@@ -176,6 +176,11 @@ namespace CommentAPI.Controllers
         private Guid? GetUserIdFromClaims()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                userIdClaim = User.FindFirst("sub");
+            }
+
             if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
             {
                 return userId;

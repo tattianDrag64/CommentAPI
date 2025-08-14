@@ -27,7 +27,8 @@ namespace CommentAPI.Repositories
                 CreatedAt = comment.CreatedAt,
                 UpdatedAt = comment.UpdatedAt,
                 UserID = comment.UserID,
-                EventID = comment.EventID
+                EventID = comment.EventID,
+                 ReplyToID = comment.ReplyToID
             }).ToList();
         }
         public async Task<CommentDTO> GetByIdComment(int id)
@@ -44,7 +45,8 @@ namespace CommentAPI.Repositories
                 CreatedAt = tempData.CreatedAt,
                 UpdatedAt = tempData.UpdatedAt,
                 UserID = tempData.UserID,
-                EventID = tempData.EventID
+                EventID = tempData.EventID,
+                ReplyToID = tempData.ReplyToID
             };
         }
         public async Task<CreateCommentDto> CreateComment(CreateCommentDto comment)
@@ -59,7 +61,8 @@ namespace CommentAPI.Repositories
                 Content = comment.Content,
                 CreatedAt = comment.CreatedAt,
                 UserID = comment.UserID,
-                EventID = comment.EventID
+                EventID = comment.EventID,
+                ReplyToID = comment.ReplyToID
             };
 
             _context.Comments.Add(commentEntity);
@@ -86,6 +89,95 @@ namespace CommentAPI.Repositories
                 UpdatedAt = tempData.UpdatedAt
             };
         }
+
+        public async Task<List<CommentDTO>> GetTopLevelComments(int eventId)
+        {
+            var topLevelComments = await _context.Comments
+                .Where(c => c.EventID == eventId && c.ReplyToID == null)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+
+            if (topLevelComments == null || !topLevelComments.Any())
+            {
+                return new List<CommentDTO>();
+            }
+
+            var result = new List<CommentDTO>();
+
+            foreach (var comment in topLevelComments)
+            {
+                var commentDto = new CommentDTO
+                {
+                    ID = comment.ID,
+                    Content = comment.Content,
+                    CreatedAt = comment.CreatedAt,
+                    UpdatedAt = comment.UpdatedAt,
+                    UserID = comment.UserID,
+                    EventID = comment.EventID,
+                    ReplyToID = comment.ReplyToID
+                };
+                result.Add(commentDto);
+            }
+
+            return result;
+        }
+        public async Task<List<CommentDTO>> GetReplies(int commentId)
+        {
+            var replies = await _context.Comments
+                .Where(c => c.ReplyToID == commentId)
+                .OrderBy(c => c.CreatedAt)
+                .ToListAsync();
+
+            if (replies == null || !replies.Any())
+            {
+                return new List<CommentDTO>();
+            }
+
+            var result = new List<CommentDTO>();
+
+            foreach (var reply in replies)
+            {
+                var replyDto = new CommentDTO
+                {
+                    ID = reply.ID,
+                    Content = reply.Content,
+                    CreatedAt = reply.CreatedAt,
+                    UpdatedAt = reply.UpdatedAt,
+                    UserID = reply.UserID,
+                    EventID = reply.EventID,
+                    ReplyToID = reply.ReplyToID
+                };
+
+                result.Add(replyDto);
+            }
+
+            return result;
+        }
+
+        public async Task<List<CommentDTO>> GetParentComment(int replyID)
+        {
+            var parentTemp = await _context.Comments
+                .Where(c => c.ID == replyID)
+                .OrderBy(c => c.CreatedAt)
+                .ToListAsync();
+
+            if (parentTemp == null || !parentTemp.Any())
+            {
+                throw new ArgumentNullException(nameof(parentTemp), "No Comment Found!"); ;
+            }
+
+            return parentTemp.Select(comment => new CommentDTO
+            {
+                ID = comment.ID,
+                Content = comment.Content,
+                CreatedAt = comment.CreatedAt,
+                UpdatedAt = comment.UpdatedAt,
+                UserID = comment.UserID,
+                EventID = comment.EventID,
+                ReplyToID = comment.ReplyToID
+            }).ToList();
+        }
+
         public async Task<bool> DeleteComment(int id)
         {
             var tempData = await _context.Comments.FindAsync(id);
@@ -111,7 +203,8 @@ namespace CommentAPI.Repositories
                 CreatedAt = comment.CreatedAt,
                 UpdatedAt = comment.UpdatedAt,
                 UserID = comment.UserID,
-                EventID = comment.EventID
+                EventID = comment.EventID,
+                ReplyToID = comment.ReplyToID
             }).ToList();
         }
 

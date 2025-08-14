@@ -8,6 +8,7 @@
         public DateTime? UpdatedAt { get; set; }
         public Guid UserID { get; set; }
         public int EventID { get; set; }
+        public int? ReplyToID { get; set; }
     }
 
     public class CreateCommentDto
@@ -17,6 +18,7 @@
         public DateTime CreatedAt { get; set; }
         public Guid UserID { get; set; }
         public int EventID { get; set; }
+        public int? ReplyToID { get; set; }
     }
 
     public class UpdateCommentDto

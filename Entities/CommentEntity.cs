@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CommentAPI.Entities
 {
@@ -17,5 +18,6 @@ namespace CommentAPI.Entities
         public Guid UserID { get; set; }
         [Required]
         public int EventID { get; set; }
+        public int? ReplyToID { get; set; }
     }
 }

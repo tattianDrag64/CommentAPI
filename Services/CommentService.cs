@@ -68,5 +68,20 @@ namespace CommentAPI.Services
         {
             return await _commentRepository.GetByEventIdComment(eventId);
         }
+
+        public async Task<List<CommentDTO>> GetParentComments(int replyID)
+        {
+            return await _commentRepository.GetParentComment(replyID);
+        }
+
+        public async Task<List<CommentDTO>> GetCommentReplies(int commentId)
+        {
+            return await _commentRepository.GetReplies(commentId);
+        }
+
+        public async Task<List<CommentDTO>> GetTopLevelComments(int eventId)
+        {
+            return await _commentRepository.GetTopLevelComments(eventId);
+        }
     }
 }
