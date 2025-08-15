@@ -173,6 +173,73 @@ namespace CommentAPI.Controllers
             return Ok(commentDtos);
         }
 
+        [HttpGet("toplevel/event/{eventId}")]
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetTopLevelComments(int eventId)
+        {
+            try
+            {
+                var comments = await _service.GetTopLevelComments(eventId);
+                if (comments == null || !comments.Any())
+                {
+                    return NotFound("No comments found for this event");
+                }
+                return Ok(comments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{id}/replies")]
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentReplies(int id)
+        {
+            try
+            {
+                var comment = await _service.GetByIdComment(id);
+                if (comment == null)
+                {
+                    return NotFound($"Comment with ID {id} not found");
+                }
+
+                var replies = await _service.GetCommentReplies(id);
+                return Ok(replies);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("reply/{id}/parent")]
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetParentComments(int id)
+        {
+            try
+            {
+                var comment = await _service.GetByIdComment(id);
+                if (comment == null)
+                {
+                    return NotFound($"Comment with ID {id} not found");
+                }
+
+                if (comment.ReplyToID == null)
+                {
+                    return NotFound($"Comment with ID {id} is not a reply and has no parent");
+                }
+
+                var parentComments = await _service.GetParentComments(id);
+                if (parentComments == null || !parentComments.Any())
+                {
+                    return NotFound($"No parent comment found for comment with ID {id}");
+                }
+                return Ok(parentComments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         private Guid? GetUserIdFromClaims()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
